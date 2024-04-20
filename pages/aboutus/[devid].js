@@ -15,9 +15,8 @@ const Developer = () => {
     <div>
       {devDetail ? (
         <>
-          <p>{devDetail.id}</p>
-          <p>{devDetail.name}</p>
-          <p>{devDetail.role}</p>
+          <p>Name: {devDetail.name}</p>
+          <p>Role: {devDetail.role}</p>
         </>
       ) : (
         <p>Developer doesn't exist</p>
