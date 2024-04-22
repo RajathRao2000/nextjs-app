@@ -9,6 +9,8 @@
     "v": "node -v"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
+    "mongodb": "4.1",
     "next": "10.0.6",
     "node": "14.16.1",
     "react": "17.0.1",

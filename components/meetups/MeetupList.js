@@ -4,17 +4,15 @@ import classes from "./MeetupList.module.css";
 function MeetupList(props) {
   return (
     <ul className={classes.list}>
-      {/* {props.meetups && */}
         {props.meetups.map((meetup) => (
           <MeetupItem
-            key={meetup.id}
-            id={meetup.id}
+            key={meetup._id}
+            id={meetup._id}
             image={meetup.image}
             title={meetup.title}
             address={meetup.address}
           />
         ))}
-        {/* // } */}
     </ul>
   );
 }

@@ -1,5 +1,8 @@
-import React from "react";
+import React, { Fragment } from "react";
+import Head from "next/head";
 import MeetupList from "../components/meetups/MeetupList";
+import { useRouter } from "next/router";
+import "dotenv/config";
 
 const DUMMY_MEETUPS = [
   {
@@ -20,14 +23,16 @@ const DUMMY_MEETUPS = [
   },
 ];
 
+async function getMeetups() {}
 const HomePage = (props) => {
-  // const [loadedMeetups,setLoadedMeetups]=useState([])
-  // useEffect(()=>{
-  //   //send a http request and feth data
-
-  //   setLoadedMeetups(DUMMY_MEETUPS)
-  // },[])
-  return <MeetupList meetups={props.meetups} />;
+  return (
+    <Fragment>
+      <Head>
+        <title>React Meetups</title>
+      </Head>
+      <MeetupList meetups={props.meetups} />;
+    </Fragment>
+  );
 };
 
 // export async function getServerSideProps(context) {
@@ -42,13 +47,23 @@ const HomePage = (props) => {
 //   };
 // }
 
-export async function getStaticProps(){
+export async function getStaticProps() {
   //fetch data from an API
+  // try {
+  const response = await fetch(process.env.LOCALBASE + "/api/get-meetups");
+
+  const data = await response.json();
+  // } catch (error) {
+  //   console.log(error);
+  // }
+
+  const MEETUPS = data;
+  console.log(MEETUPS);
   return {
     props: {
-      meetups: DUMMY_MEETUPS
+      meetups: MEETUPS,
     },
-    revalidate: 10
+    revalidate: 10,
   };
 }
 

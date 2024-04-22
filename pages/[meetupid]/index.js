@@ -1,53 +1,73 @@
 import React, { Fragment } from "react";
 import MeetupDetail from "../../components/meetups/MeetupDetail";
+import { MongoClient, ObjectId } from "mongodb";
+import Head from "next/head";
 
-const MeetupDetails = () => {
+const MeetupDetails = (props) => {
   return (
-    <MeetupDetail
-      image={`https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/2560px-Stadtbild_M%C3%BCnchen.jpg`}
-      title={`first meetup`}
-      address={"Some Street 5, Some City"}
-      description={"This is a first meetup"}
-    />
+    <Fragment>
+      <Head>
+        <title>{props.meetupDate.title}</title>
+        <meta name="description" content={props.meetupDate.description} />
+      </Head>
+      <MeetupDetail
+        image={props.meetupDate.image}
+        title={props.meetupDate.title}
+        address={props.meetupDate.address}
+        description={props.meetupDate.description}
+      />
+    </Fragment>
   );
 };
 export async function getStaticPaths() {
   //fetch data for a single meetup
+
+  const uri =
+    "mongodb+srv://user:user@cluster0.z25nbll.mongodb.net/meetups?retryWrites=true&w=majority&appName=cluster0";
+  const client = await MongoClient.connect(uri);
+  const db = client.db();
+
+  const meetupsCollection = db.collection("meetups");
+  const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
+  console.log("meetups:::", meetups);
+  client.close();
+
   return {
     fallback: false,
-    paths: [
-      {
-        params: {
-          meetupid: "m1",
-        },
-      },
-      {
-        params: {
-          meetupid: "m2",
-        },
-      },
-      {
-        params: {
-          meetupid: "m3",
-        },
-      },
-    ],
+    paths: meetups.map((meetup) => ({
+      params: { meetupid: meetup._id.toString() },
+    })),
   };
 }
 
 export async function getStaticProps(context) {
   //fetch data fro a single meetup
+
   const meetupId = context.params.meetupid;
-  console.log("in getstaticprops|||", context, meetupId);
+  console.log(meetupId, ":::meetupId");
+
+  const uri =
+    "mongodb+srv://user:user@cluster0.z25nbll.mongodb.net/meetups?retryWrites=true&w=majority&appName=cluster0";
+  const client = await MongoClient.connect(uri);
+  const db = client.db();
+
+  const meetupsCollection = db.collection("meetups");
+  // const selectedMeetup = await meetupsCollection.findOne();
+  const selectedMeetup = await meetupsCollection.findOne({
+    _id: ObjectId(meetupId),
+  });
+  // console.log("meetups:::",meetups)
+
+  client.close();
+
   return {
     props: {
       meetupDate: {
-        image:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/2560px-Stadtbild_M%C3%BCnchen.jpg",
-        id: meetupId,
-        title: "first meetup",
-        address: "Some Street 5, Some City",
-        description: "This is a first meetup",
+        id: selectedMeetup._id.toString(),
+        title: selectedMeetup.title,
+        address: selectedMeetup.address,
+        image: selectedMeetup.image,
+        description: selectedMeetup.description,
       },
     },
   };
