@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { todoAction } from "@/store/todoSlice";
 import { MongoClient } from "mongodb";
+import { uiactions } from "@/store/uiSlice";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -17,8 +18,10 @@ const CompletedTasks = (props) => {
   const dispatch = useDispatch();
   const todo = useSelector((state) => state.todo);
   console.log(todo);
+  const loading=useSelector(state=>state.ui.loader)
 
   const deleteHandler = async (id) => {
+    dispatch(uiactions.setLoader(true))
     console.log("delete handler", id);
     try {
       const response = await fetch("/api/delete-task", {
@@ -36,9 +39,13 @@ const CompletedTasks = (props) => {
     } catch (error) {
       console.log(error);
     }
+    dispatch(uiactions.setLoader(false))
+
   };
 
   const setComplete = async (id, value) => {
+    dispatch(uiactions.setLoader(true))
+
     try {
       const response = await fetch("/api/set-completed", {
         method: "POST",
@@ -57,6 +64,8 @@ const CompletedTasks = (props) => {
     } catch (error) {
       console.log(error);
     }
+    dispatch(uiactions.setLoader(false))
+
   };
 
   useEffect(() => {
@@ -66,19 +75,19 @@ const CompletedTasks = (props) => {
   return (
     <div>
       <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-        <h1 className="text-2xl m-3 ">Completed Tasks</h1>
+        <h1 className="text-2xl m-5 ml-0">Completed Tasks</h1>
+        <div className="w-[290px]"></div>
         {todo.todoList.length !== 0 ? (
           todo.todoList.map((task) => {
-            const { name, date, completed, _id } = task;
-            console.log("task", task);
-            if (completed === true) {
+            const { name, date, status, _id } = task;
+            if (status === "complete") {
               return (
                 <ListItem
                   key={_id}
                   secondaryAction={
                     <>
                       <IconButton
-                        onClick={() => setComplete(_id, false)}
+                        onClick={() => setComplete(_id, "incomplete")}
                         edge="end"
                       >
                         <RemoveCircleIcon color="error" />

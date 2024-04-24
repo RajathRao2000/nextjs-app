@@ -22,7 +22,7 @@ const todoSlice = createSlice({
       console.log("setcomp", action.payload);
       state.todoList.forEach((task) => {
         if (task._id === action.payload.id) {
-          task.completed = action.payload.value;
+          task.status = action.payload.value;
         }
       });
     },

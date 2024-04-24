@@ -9,17 +9,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { todoAction } from "@/store/todoSlice";
 import { MongoClient } from "mongodb";
 import { useEffect } from "react";
+import { uiactions } from "@/store/uiSlice";
 
 export default function Home(props) {
   const dispatch = useDispatch();
   const todo = useSelector((state) => state.todo.todoList);
+  const loading=useSelector(state=>state.ui.loader)
 
   const submitHandler = async (e) => {
+    dispatch(uiactions.setLoader(true))
+
     e.preventDefault();
     const todoTask = {
       name: e.target.todotask.value,
       date: new Date().toString(),
-      completed: false,
+      status: "incomplete",
     };
     console.log(todoTask);
     const response = await fetch("/api/post-tasks", {
@@ -35,10 +39,12 @@ export default function Home(props) {
       dispatch(todoAction.addTask({ ...todoTask, id: data.id }));
       e.target.todotask.value=""
     }
+    dispatch(uiactions.setLoader(false))
+
   };
 
   const deleteHandler = async (id) => {
-    console.log("delete handler", id);
+    dispatch(uiactions.setLoader(true))
     try {
       const response = await fetch("/api/delete-task", {
         method: "POST",
@@ -55,9 +61,13 @@ export default function Home(props) {
     } catch (error) {
       console.log(error);
     }
+    dispatch(uiactions.setLoader(false))
+
   };
 
   const setComplete = async (id, value) => {
+    dispatch(uiactions.setLoader(true))
+
     try {
       const response =await fetch("/api/set-completed", {
         method: "POST",
@@ -77,6 +87,8 @@ export default function Home(props) {
     } catch (error) {
       console.log(error);
     }
+    dispatch(uiactions.setLoader(false))
+
   };
 
   useEffect(() => {

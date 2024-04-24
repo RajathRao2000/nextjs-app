@@ -19,10 +19,10 @@ const ToDoDisplay = (props) => {
     <div>
       <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
         {todo.todoList.length!==0?todo.todoList.map((task) => {
-          const { name, date, completed, _id } = task;
+          const { name, date, status, _id } = task;
           // console.log("tododisplay:",_id,task)
           
-          if (completed === false) {
+          if (status === "incomplete") {
             return (
               <ListItem
                 key={_id}
@@ -42,7 +42,7 @@ const ToDoDisplay = (props) => {
                     <Checkbox
                       edge="start"
                       //   tabIndex={-1}
-                      onClick={()=>props.setComplete(_id,true)}
+                      onClick={()=>props.setComplete(_id,"complete")}
                       disableRipple
                       //   inputProps={{ "aria-labelledby": labelId }}
                     />

@@ -9,11 +9,11 @@ import AddIcon from "@mui/icons-material/Add";
 const ToDoForm = (props) => {
   const dispatch = useDispatch();
 
-
   return (
     <form className={`container`} onSubmit={props.submit}>
+      <h1 className="text-2xl m-5 ml-0">Add a Task</h1>
       <FormControl>
-        <FormLabel htmlFor="todoinput">Enter Task</FormLabel>
+        {/* <FormLabel htmlFor="todoinput">Enter Task</FormLabel> */}
         <div className=" flex">
           <TextField
             className="rounded-r-none"
