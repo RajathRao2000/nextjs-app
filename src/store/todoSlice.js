@@ -29,6 +29,14 @@ const todoSlice = createSlice({
     getAll(state, action) {
       state.todoList = action.payload;
     },
+    editTask(state,action){
+      state.todoList.forEach(task=>{
+        if(task._id===action.payload.id){
+          task.name=action.payload.name
+        }
+      })
+
+    }
   },
 });
 
