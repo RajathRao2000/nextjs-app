@@ -24,9 +24,9 @@ export default function Header() {
 
           <Link
             className="hover:underline"
-            href={router.pathname == "/complete" ? "/" : "/complete"}
+            href={router.pathname == "/completedtasks" ? "/today" : "/completedtasks"}
           >
-            {router.pathname == "/complete" ? "TASKS" : "COMPLETED TASKS"}
+            {router.pathname == "/completedtasks" ? "TASKS" : "COMPLETED TASKS"}
           </Link>
         </Toolbar>
       </AppBar>
